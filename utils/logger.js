@@ -1,7 +1,7 @@
 const winston = require('winston');
 
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: 'error', // Only log errors
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
@@ -10,24 +10,8 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { API: 'E-Commerce' },
   transports: [
-    // Console Transport (Only for development)
-    new winston.transports.Console({
-      level: process.env.NODE_ENV === 'production' ? 'error' : 'debug',
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.printf(({ level, message, timestamp, stack }) => {
-          return stack
-            ? `${timestamp} [${level}]: ${stack}`
-            : `${timestamp} [${level}]: ${message}`;
-        })
-      ),
-    }),
-
     // File Transport for Errors
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
-
-    // File Transport for All Logs
-    new winston.transports.File({ filename: 'combined.log' }),
   ],
 });
 
